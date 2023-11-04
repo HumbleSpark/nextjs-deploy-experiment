@@ -7,12 +7,11 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint": "^8.48.0",
-    "prettier": "^3.0.3",
-    "tsconfig": "*",
-    "turbo": "latest"
+    "eslint": "8.48.0",
+    "prettier": "3.0.3",
+    "turbo": "1.10.16"
   },
-  "name": "nextjs-gcp-experiment",
+  "name": "nextjs-deploy-experiment",
   "packageManager": "yarn@1.22.19",
   "workspaces": [
     "apps/*",
