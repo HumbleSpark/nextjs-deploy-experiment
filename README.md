@@ -1,6 +1,9 @@
 # NextJS Deploy Experiment
 
 - github actions
+  -- Artifact Build & Upload
+  -- Deploy Stage (Previews)
+  -- Rollout Stages (Gradual Rollouts / Canary)
 - cloud run deploys
 - branches & tags trigger cloudrun deploy with hash url
 - reverse proxy cloudrun with skew protection & preview support
@@ -21,6 +24,8 @@ docker push us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experim
 
 ```
 
+https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/
+
 ## Steps Taken
 
 - Created Github repo
@@ -28,4 +33,6 @@ docker push us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experim
 - Installed Gcloud https://cloud.google.com/sdk/docs/install & signed in.
 - Created nextjs-deploy-experiment in GCloud Artifact Registry
 - Auth'd gcloud for Docker `gcloud auth configure-docker us-central1-docker.pkg.dev`
-- Built docker image and tagged
+- Built docker image and tagged. Pushed to artifact registry.
+- Created nextjs-deploy-experiment in cloudrun. Selected image and deployed.
+- Auth with Github actions https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions ; https://github.com/google-github-actions/auth

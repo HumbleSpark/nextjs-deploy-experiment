@@ -9,7 +9,8 @@ jobs:
       id-token: "write"
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - uses: actions/checkout@v4
+      - name: Check out repository code
+        uses: actions/checkout@v4
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1.1.1
         with:
@@ -17,10 +18,12 @@ jobs:
           service_account: "my-service-account@alert-parsec-404117.iam.gserviceaccount.com"
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v4
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - run: echo "Current SHA is ${{ github.sha }}"
+      - name: Get tag
+        id: get-tag
+        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
