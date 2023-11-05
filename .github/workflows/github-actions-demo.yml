@@ -12,10 +12,18 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Authenticate to Google Cloud
+        id: auth
         uses: google-github-actions/auth@v1.1.1
         with:
           workload_identity_provider: "projects/525978447980/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
           service_account: "my-service-account@alert-parsec-404117.iam.gserviceaccount.com"
+          token_format: "access_token"
+      - name: Login to Artifact Registry
+        uses: docker/login-action@v1
+        with:
+          registry: us-central1-docker.pkg.dev
+          username: "oauth2accesstoken"
+          password: "${{ steps.auth.outputs.access_token }}"
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
