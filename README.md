@@ -15,36 +15,36 @@ https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/
 ```sh
 yarn turbo run dev
 
+# for running local docker / building & deploying...
+export RUN_PROJECT=nextjs-deploy-experiment
+export LOCAL_IMAGE=nextjs-deploy-experiment
+export REMOTE_IMAGE=us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment
+export TAG=$(git rev-parse --short HEAD)
+export REGION=us-central1
+
 # local
-docker build -t nextjs-deploy-experiment -f apps/nextjs-deploy-experiment/Dockerfile .
-docker run -p "3000:3000" -e "PORT=3000" -i -t nextjs-deploy-experiment
+docker build -t $LOCAL_IMAGE:$TAG -f apps/nextjs-deploy-experiment/Dockerfile .
+docker run -p "3000:3000" -e "PORT=3000" -i -t $LOCAL_IMAGE:$TAG
 
 # artifact registry
-export SHA_SHORT=$(git rev-parse --short HEAD)
-docker build --platform linux/amd64 -t nextjs-deploy-experiment -f apps/nextjs-deploy-experiment/Dockerfile .
-docker tag nextjs-deploy-experiment us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment:$SHA_SHORT
-docker push us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment:$SHA_SHORT
+docker build --platform linux/amd64 -t $LOCAL_IMAGE:$TAG -f apps/nextjs-deploy-experiment/Dockerfile .
+docker tag $LOCAL_IMAGE:$TAG $REMOTE_IMAGE:$TAG
+docker push $REMOTE_IMAGE:$TAG
 
 # deploy https://cloud.google.com/sdk/gcloud/reference/run/deploy
-gcloud run deploy nextjs-deploy-experiment \
-  --image=us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment:$SHA_SHORT \
-  --region=us-central1 \
-  --revision-suffix=$SHA_SHORT \
-  --tag=$SHA_SHORT \
+gcloud run deploy $RUN_PROJECT \
+  --region=$REGION \
+  --image=$REMOTE_IMAGE:$TAG \
+  --revision-suffix=$TAG \
+  --tag=$TAG \
   --min-instances=0 \
   --max-instances=5 \
   --port=8080 \
   --no-traffic
 
 # rollout https://cloud.google.com/sdk/gcloud/reference/run/services/update-traffic
-gcloud run services update-traffic nextjs-deploy-experiment \
-  --region=us-central1 \
-  --update-tags=latest=nextjs-deploy-experiment-$SHA_SHORT \
-  --to-revisions=nextjs-deploy-experiment-$SHA_SHORT=10
-
-gcloud run services update-traffic nextjs-deploy-experiment \
-  --region=us-central1 \
-  --to-revisions=nextjs-deploy-experiment-$SHA_SHORT=100
+gcloud run services update-traffic $RUN_PROJECT --region=$REGION --to-revisions=$RUN_PROJECT-$TAG=10
+gcloud run services update-traffic $RUN_PROJECT --region=$REGION --to-revisions=$RUN_PROJECT-$TAG=100
 ```
 
 ## Steps Taken
