@@ -34,6 +34,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
+          context: .
+          file: ./apps/nextjs-deploy-experiment/Dockerfile
+          platforms: linux/amd64
           tags: |
             us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment:${{ steps.vars.outputs.sha_short }}
             us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment:latest
