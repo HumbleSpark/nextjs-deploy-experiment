@@ -35,4 +35,4 @@ https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/
 - Auth'd gcloud for Docker `gcloud auth configure-docker us-central1-docker.pkg.dev`
 - Built docker image and tagged. Pushed to artifact registry.
 - Created nextjs-deploy-experiment in cloudrun. Selected image and deployed.
-- Auth with Github actions https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions ; https://github.com/google-github-actions/auth
+- Auth with Github actions https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions ; https://github.com/google-github-actions/auth ; https://gist.github.com/palewire/12c4b2b974ef735d22da7493cf7f4d37
