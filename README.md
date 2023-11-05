@@ -1,12 +1,14 @@
 # NextJS Deploy Experiment
 
+https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/
+
 - github actions
   -- Artifact Build & Upload
   -- Deploy Stage (Previews)
   -- Rollout Stages (Gradual Rollouts / Canary)
 - cloud run deploys
 - branches & tags trigger cloudrun deploy with hash url
-- reverse proxy cloudrun with skew protection & preview support
+- reverse proxy / middleware for skew protection
 - ui to promote a deploy to production
 - istio setup ... gql
 
@@ -24,8 +26,6 @@ docker push us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experim
 
 ```
 
-https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/
-
 ## Steps Taken
 
 - Created Github repo
@@ -36,3 +36,16 @@ https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/
 - Built docker image and tagged. Pushed to artifact registry.
 - Created nextjs-deploy-experiment in cloudrun. Selected image and deployed.
 - Auth with Github actions https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions ; https://github.com/google-github-actions/auth ; https://gist.github.com/palewire/12c4b2b974ef735d22da7493cf7f4d37
+
+gcloud iam service-accounts add-iam-policy-binding "my-service-account@alert-parsec-404117.iam.gserviceaccount.com" --role="iam.serviceAccounts.getAccessToken" --member=serviceAccount:my-service-account@alert-parsec-404117.iam.gserviceaccount.com
+
+gcloud iam service-accounts add-iam-policy-binding "my-service-account@alert-parsec-404117.iam.gserviceaccount.com" --role="iam.serviceAccountUser" --member=serviceAccount:my-service-account@alert-parsec-404117.iam.gserviceaccount.com
+
+alert-parsec-404117 \
+--member='serviceAccoun:my-service-account@alert-parsec-404117.iam.gserviceaccount.com' \
+--role='roles/iam.serviceAccountUser'
+
+gcloud iam service-accounts add-iam-policy-binding "my-service-account@alert-parsec-404117.iam.gserviceaccount.com" --role="roles/iam.workloadIdentityUser" --member=serviceAccount:my-service-account@alert-parsec-404117.iam.gserviceaccount.com
+
+projects/525978447980/locations/global/workloadIdentityPools/my-pool
+projects/525978447980/locations/global/workloadIdentityPools/my-pool/providers/my-provider-x
