@@ -54,6 +54,8 @@ jobs:
         run: |
           if [${{ github.ref_name }} = "main" ]; then
             branchLabel="branch=main"
+          else
+            branchLabel=""
           fi
           for RUN_REGION in "us-east1" "us-central1"
           do
