@@ -1,6 +1,6 @@
 # NextJS Deploy Experiment
 
-This deploys a Turborepo, NextJS app using Github Actions and GCS Cloud Run. Gets a Preview URL on main deploys, then lets us rollout traffic. Mostly for experimenting with GCS, service accounts, etc.
+This deploys a Turborepo, NextJS app using Github Actions and GCP Cloud Run. Gets a Preview URL on main deploys, then lets us rollout traffic. Mostly for experimenting with GCP, service accounts, etc.
 
 90% of requests will show `Hello world` with 10% `Hello world!?` hitting canary.
 
