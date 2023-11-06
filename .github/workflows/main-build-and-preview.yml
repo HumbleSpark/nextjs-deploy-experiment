@@ -52,7 +52,7 @@ jobs:
           do
             gcloud run deploy nextjs-deploy-experiment \
               --region=$RUN_REGION \
-              --image=$Docker_Image:${{ steps.vars.outputs.tag }} \
+              --image=${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }} \
               --revision-suffix=${{ steps.vars.outputs.tag }} \
               --tag=${{ steps.vars.outputs.tag }} \
               --min-instances=0 \
