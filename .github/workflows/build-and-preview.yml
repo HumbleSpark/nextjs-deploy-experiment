@@ -1,11 +1,12 @@
-name: Main Build and Preview
-run-name: Building Main and Deploying Preview
+name: Build and Preview
+run-name: Building and Deploying Preview
 on:
   push:
     branches:
       - main
+      - "preview/**"
 jobs:
-  Main-Build-and-Preview:
+  Build-and-Preview:
     runs-on: ubuntu-latest
     env:
       Docker_Image: us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment
@@ -59,6 +60,7 @@ jobs:
               --image=${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }} \
               --revision-suffix=${{ steps.vars.outputs.tag }} \
               --tag=${{ steps.vars.outputs.tag }} \
+              --labels=branch=${{ github.ref_name }}
               --min-instances=0 \
               --max-instances=5 \
               --port=8080 \
