@@ -27,6 +27,6 @@ jobs:
           for RUN_REGION in "us-east1" "us-central1"
           do
             echo "---- Describing $RUN_REGION ----"
-            gcloud run services describe nextjs-deploy-experiment --region=$REGION --format=json | jq ".status.traffic | map(select(.percent))"
-            gcloud run revisions list --service nextjs-deploy-experiment --region $RUN_REGION --limit 20 --filter="metadata.labels.branch=main"
+            gcloud run services describe nextjs-deploy-experiment --region=$RUN_REGION --format=json | jq ".status.traffic | map(select(.percent))" >> $GITHUB_STEP_SUMMARY
+            gcloud run revisions list --service nextjs-deploy-experiment --region $RUN_REGION --limit 20 --filter="metadata.labels.branch=main" >> $GITHUB_STEP_SUMMARY
           done
