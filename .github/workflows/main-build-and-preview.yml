@@ -7,6 +7,8 @@ on:
 jobs:
   Main-Build-and-Preview:
     runs-on: ubuntu-latest
+    env:
+      Docker_Image: us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment
     permissions:
       contents: "read"
       id-token: "write"
@@ -31,36 +33,36 @@ jobs:
           registry: us-central1-docker.pkg.dev
           username: "oauth2accesstoken"
           password: "${{ steps.auth.outputs.access_token }}"
-      # - name: "Deploy Preview"
-      #   run: |
-      #     gcloud run deploy nextjs-deploy-experiment \
-      #       --region=us-central1 \
-      #       --image=us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment:f2150dd \
-      #       --revision-suffix=f2150dd \
-      #       --tag=f2150dd \
-      #       --min-instances=0 \
-      #       --max-instances=5 \
-      #       --port=8080 \
-      #       --no-traffic
+      - name: Parse SHA / Tag
+        id: vars
+        run: echo "tag=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Tag Docker image and push to Google Artifact Registry
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: .
+          file: ./apps/nextjs-deploy-experiment/Dockerfile
+          platforms: linux/amd64
+          tags: |
+            $Docker_Image:${{ steps.vars.outputs.tag }}
+            $Docker_Image:latest
+      - name: "Deploy Preview"
+        run: |
+          for RUN_REGION in "us-east1" "us-central1"
+          do
+            gcloud run deploy nextjs-deploy-experiment \
+              --region=$RUN_REGION \
+              --image=$Docker_Image:${{ steps.vars.outputs.tag }} \
+              --revision-suffix=${{ steps.vars.outputs.tag }} \
+              --tag=${{ steps.vars.outputs.tag }} \
+              --min-instances=0 \
+              --max-instances=5 \
+              --port=8080 \
+              --no-traffic
+          done
       - name: Summary
         run: |
           echo "### Deployed! :rocket:" >> $GITHUB_STEP_SUMMARY
-          echo "The revision can be reached directly at https://f2150dd---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app" >> $GITHUB_STEP_SUMMARY
+          echo "The revision can be reached directly at https://${{ steps.vars.outputs.tag }}---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app (Central)" >> $GITHUB_STEP_SUMMARY
+          echo "The revision can be reached directly at https://${{ steps.vars.outputs.tag }}---nextjs-deploy-experiment-szlazhzr7q-ue.a.run.app" (East)>> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-
-      # - name: Set outputs
-      #   id: vars
-      #   run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      # - name: Check outputs
-      #   run: echo ${{ steps.vars.outputs.sha_short }}
-      # - id: docker-push-tagged
-      #   name: Tag Docker image and push to Google Artifact Registry
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     push: true
-      #     context: .
-      #     file: ./apps/nextjs-deploy-experiment/Dockerfile
-      #     platforms: linux/amd64
-      #     tags: |
-      #       us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment:${{ steps.vars.outputs.sha_short }}
-      #       us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment:latest
