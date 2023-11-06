@@ -1,8 +1,13 @@
 name: Update Production Traffic
 run-name: Update Production Traffic
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      to-revisions:
+        description: "Comma separated list of revisions and percentages. Ex: nextjs-deploy-experiment-rev-a0adaee=10,nextjs-deploy-experiment-rev-d85dee3=90"
+        required: true
 jobs:
-  Main-Build-and-Preview:
+  Update-Production-Traffic:
     runs-on: ubuntu-latest
     permissions:
       contents: "read"

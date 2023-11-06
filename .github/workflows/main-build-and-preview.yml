@@ -68,5 +68,5 @@ jobs:
         run: |
           echo "### Deployed! :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "The revision can be reached directly at https://${{ steps.vars.outputs.tag }}---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app (Central)" >> $GITHUB_STEP_SUMMARY
-          echo "The revision can be reached directly at https://${{ steps.vars.outputs.tag }}---nextjs-deploy-experiment-szlazhzr7q-ue.a.run.app" (East)>> $GITHUB_STEP_SUMMARY
+          echo "The revision can be reached directly at https://${{ steps.vars.outputs.tag }}---nextjs-deploy-experiment-szlazhzr7q-ue.a.run.app (East)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
