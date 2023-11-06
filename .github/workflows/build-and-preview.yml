@@ -20,11 +20,11 @@ jobs:
         run: |
           echo hmmm... ${{ github.ref_name }} 
           if [${{ github.ref_name }} = "main" ]; then
-            branchLabel="branch=main"
+            branch=main
           else
-            branchLabel=""
+            branch=pull-request
           fi
-          echo ok... $branchLabel
+          echo ok... $branch
       # - name: Authenticate to Google Cloud
       #   id: auth
       #   uses: google-github-actions/auth@v1.1.1
