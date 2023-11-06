@@ -1,19 +1,8 @@
-name: Promote Image
-run-name: Update Production Traffic
-on:
-  workflow_dispatch:
-    inputs:
-      sha:
-        description: "SHA to Promote"
-        required: true
-      promote-to:
-        type: choice
-        description: Promote to
-        options:
-          - all-traffic
-          - ten-percent
+name: Decsribe Production Traffic
+run-name: Describe Production Traffic
+on: workflow_dispatch
 jobs:
-  Update-Production-Traffic:
+  Describe-Production-Traffic:
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -33,3 +22,10 @@ jobs:
         uses: "google-github-actions/setup-gcloud@v1"
         with:
           version: "453.0.0"
+      - name: "Describe Traffic"
+        run: |
+          for RUN_REGION in "us-east1" "us-central1"
+          do
+            echo "---- Describing $RUN_REGION ----"
+            gcloud run services describe nextjs-deploy-experiment --region=$RUN_REGION
+          done
