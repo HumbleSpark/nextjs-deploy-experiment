@@ -19,6 +19,7 @@ This deploys a Turborepo, NextJS app using Github Actions and GCS Cloud Run. Get
 - [ ] Upload assets to GCS from Docker image.
 - [ ] PRs action to deploy to separate project for branch previews.
 - [ ] Middleware / reverse proxy for skew protection (pointing at specific hash deploy via headers).
+- [ ] Hook this up to Remote Cache. See how Docker build caching is.
 - [ ] Better UI for managing deployments. Simple, Vercel like (google cloud authentication; summary view with whats live in canary/all-traffic, with datacenter tags; list of commits with message + branch info; promote to canary; promote to all-traffic; rollback from canary).
 - [ ] Istio investigation / setup GQL API to connect to.
 - [ ] Potentially write up a blog post on simple Vercel-like deploy setup?!
