@@ -2,11 +2,12 @@
 
 This deploys a Turborepo, NextJS app using Github Actions and GCP Cloud Run. Gets a Preview URL on main deploys, then lets us rollout traffic. Mostly for experimenting with GCP, service accounts, etc.
 
-90% of requests will show `Hello world` with 10% `Hello world!?` hitting canary.
+90% of requests will show `Hello world` with 10% `Hello world 🐤` hitting canary.
 
-- [Prod, us-central1](https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
-- [Prod, us-east1](https://nextjs-deploy-experiment-szlazhzr7q-ue.a.run.app/)
-- [rev-989b088 aka canary](https://rev-989b088---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
+- [rev-53979be, aka prod, us-central1](https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
+- [rev-53979be, aka prod, us-east1](https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
+- [rev-9d036a2 aka canary](https://rev-58437bd---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
+- [rev-244916c aka pr-preview](https://rev-244916c---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
 
 ## Github Actions
 
@@ -17,7 +18,6 @@ This deploys a Turborepo, NextJS app using Github Actions and GCP Cloud Run. Get
 ## Todo
 
 - [ ] Upload assets to GCS from Docker image.
-- [ ] PRs action to deploy to separate project for branch previews.
 - [ ] Middleware / reverse proxy for skew protection (pointing at specific hash deploy via headers).
 - [ ] Hook this up to Remote Cache. See how Docker build caching is.
 - [ ] Better UI for managing deployments. Simple, Vercel like (google cloud authentication; summary view with whats live in canary/all-traffic, with datacenter tags; list of commits with message + branch info; promote to canary; promote to all-traffic; rollback from canary).
