@@ -35,7 +35,7 @@ jobs:
           version: "453.0.0"
       - name: "Update Traffic"
         run: |
-          if [ ${{ github.event.inputs.updateTo }} = 10 ]; then
+          if [ ${{ github.event.inputs.updateTo }} = "ten-percent" ]; then
             updateTo=10
           else
             updateTo=100
