@@ -11,7 +11,7 @@ This deploys a Turborepo, NextJS app using Github Actions and GCP Cloud Run. Get
 
 ## Github Actions
 
-- **Main Build and Preview (main merge):** builds a Docker image, uploads to GCS Artifact Registry, and deploys to Cloud Run for preview deploys.
+- **Build and Preview (push):** builds a Docker image, uploads to GCS Artifact Registry, and deploys to Cloud Run for preview deploys.
 - **Update Production Traffic (manual):** input Git SHA to ramp to 10% or 100% across datacenters.
 - **Describe Production Traffic (manual):** outputs current traffic allocation across datacenters.
 
