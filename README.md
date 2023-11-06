@@ -4,9 +4,13 @@ This deploys a Turborepo, NextJS app using Github Actions and GCP Cloud Run. Get
 
 90% of requests will show `Hello world` with 10% `Hello world 🐤` hitting canary.
 
-- [rev-53979be, aka prod, us-central1](https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
-- [rev-53979be, aka prod, us-east1](https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
-- [rev-9d036a2 aka canary](https://rev-58437bd---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
+- [prod, us-central1](https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
+- [prod, us-east1](https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
+
+Tagged Releases:
+
+- [rev-53979be, aka prod](https://rev-53979be---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
+- [rev-3389bf3 aka canary](https://rev-3389bf3---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
 - [rev-244916c aka pr-preview](https://rev-244916c---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/)
 
 ## Github Actions
