@@ -35,7 +35,7 @@ jobs:
           password: "${{ steps.auth.outputs.access_token }}"
       - name: Parse SHA / Tag
         id: vars
-        run: echo "tag=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: echo "tag=rev-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: Tag Docker image and push to Google Artifact Registry
         uses: docker/build-push-action@v5
         with:
@@ -46,10 +46,14 @@ jobs:
           tags: |
             ${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }}
             ${{ env.Docker_Image }}:latest
+      - name: Upload Assets
+        # pull docker image, sh inside, upload assets to gcs
+        run: echo "Todo"
       - name: "Deploy Preview"
         run: |
           for RUN_REGION in "us-east1" "us-central1"
           do
+            echo "---- Deploying $RUN_REGION ----"
             gcloud run deploy nextjs-deploy-experiment \
               --region=$RUN_REGION \
               --image=${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }} \

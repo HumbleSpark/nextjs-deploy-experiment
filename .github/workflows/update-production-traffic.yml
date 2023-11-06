@@ -1,0 +1,24 @@
+name: Update Production Traffic
+run-name: Update Production Traffic
+on: workflow_dispatch
+jobs:
+  Main-Build-and-Preview:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v1.1.1
+        with:
+          workload_identity_provider: "projects/525978447980/locations/global/workloadIdentityPools/my-pool/providers/my-provider-x"
+          service_account: "my-service-account@alert-parsec-404117.iam.gserviceaccount.com"
+          token_format: "access_token"
+          access_token_lifetime: 300s
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+        with:
+          version: "453.0.0"
