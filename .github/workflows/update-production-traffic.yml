@@ -43,5 +43,7 @@ jobs:
           for RUN_REGION in "us-east1" "us-central1"
           do
             echo "---- Deploying $RUN_REGION ----"
+            echo ""
             gcloud run services update-traffic nextjs-deploy-experiment --region=$RUN_REGION --to-revisions=nextjs-deploy-experiment-rev-${{ github.event.inputs.sha }}=$updateTo
+            echo ""
           done

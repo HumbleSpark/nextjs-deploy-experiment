@@ -55,6 +55,7 @@ jobs:
           for RUN_REGION in "us-east1" "us-central1"
           do
             echo "---- Deploying $RUN_REGION ----"
+            echo ""
             gcloud run deploy nextjs-deploy-experiment \
               --region=$RUN_REGION \
               --image=${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }} \
@@ -65,6 +66,7 @@ jobs:
               --max-instances=5 \
               --port=8080 \
               --no-traffic
+            echo ""
           done
       - name: Summary
         run: |
