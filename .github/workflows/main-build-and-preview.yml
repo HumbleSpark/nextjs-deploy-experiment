@@ -44,8 +44,8 @@ jobs:
           file: ./apps/nextjs-deploy-experiment/Dockerfile
           platforms: linux/amd64
           tags: |
-            "$Docker_Image:${{ steps.vars.outputs.tag }}"
-            "$Docker_Image:latest"
+            ${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }}
+            ${{ env.Docker_Image }}:latest
       - name: "Deploy Preview"
         run: |
           for RUN_REGION in "us-east1" "us-central1"
