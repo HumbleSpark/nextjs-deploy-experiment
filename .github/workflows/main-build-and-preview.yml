@@ -1,16 +1,22 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: Main Build and Preview
+run-name: Building Main and Deploying Preview
+on:
+  push:
+    branches:
+      - main
 jobs:
-  Explore-GitHub-Actions:
+  Main-Build-and-Preview:
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
       id-token: "write"
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - name: Check out repository code
         uses: actions/checkout@v4
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+        with:
+          version: "453.0.0"
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v1.1.1
@@ -19,31 +25,29 @@ jobs:
           service_account: "my-service-account@alert-parsec-404117.iam.gserviceaccount.com"
           token_format: "access_token"
           access_token_lifetime: 300s
-      - name: "Set up Cloud SDK"
-        uses: "google-github-actions/setup-gcloud@v1"
-        with:
-          version: "453.0.0"
-      - name: "Use gcloud CLI"
-        run: "gcloud info"
       - name: Login to Artifact Registry
         uses: docker/login-action@v1
         with:
           registry: us-central1-docker.pkg.dev
           username: "oauth2accesstoken"
           password: "${{ steps.auth.outputs.access_token }}"
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - run: echo "Current SHA is ${{ github.sha }}"
-      - name: Set outputs
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: Check outputs
-        run: echo ${{ steps.vars.outputs.sha_short }}
-      - name: List files in the repository
+      - name: "Deploy Preview"
         run: |
-          ls ${{ github.workspace }}
+          gcloud run deploy nextjs-deploy-experiment \
+            --region=us-central1 \
+            --image=us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment:f2150dd \
+            --revision-suffix=f2150dd \
+            --tag=f2150dd \
+            --min-instances=0 \
+            --max-instances=5 \
+            --port=8080 \
+            --no-traffic
+
+      # - name: Set outputs
+      #   id: vars
+      #   run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      # - name: Check outputs
+      #   run: echo ${{ steps.vars.outputs.sha_short }}
       # - id: docker-push-tagged
       #   name: Tag Docker image and push to Google Artifact Registry
       #   uses: docker/build-push-action@v5
@@ -55,4 +59,3 @@ jobs:
       #     tags: |
       #       us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment:${{ steps.vars.outputs.sha_short }}
       #       us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment:latest
-      - run: echo "🍏 This job's status is ${{ job.status }}."

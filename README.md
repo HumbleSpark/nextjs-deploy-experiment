@@ -2,11 +2,12 @@
 
 https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/
 
-- github actions
-  -- Artifact Build & Upload
-  -- Deploy Stage (Previews)
-  -- Rollout Stages (Gradual Rollouts / Canary)
+- Github Actions
+  -- Main: Build & Upload & Preview
+  -- Main (Manual): Update Production Traffic
+  -- PRs: Build & Upload & Preview
 - cloud run deploys
+- deploy assets to gcs
 - branches & tags trigger cloudrun deploy with hash url
 - reverse proxy / middleware for skew protection
 - ui to promote a deploy to production
@@ -16,11 +17,14 @@ https://nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app/
 yarn turbo run dev
 
 # for running local docker / building & deploying...
+export RUN_REGIONS=(
+  us-east1
+  us-central1
+)
 export RUN_PROJECT=nextjs-deploy-experiment
 export LOCAL_IMAGE=nextjs-deploy-experiment
 export REMOTE_IMAGE=us-central1-docker.pkg.dev/alert-parsec-404117/nextjs-deploy-experiment/nextjs-deploy-experiment
 export TAG=$(git rev-parse --short HEAD)
-export REGION=us-central1
 
 # local
 docker build -t $LOCAL_IMAGE:$TAG -f apps/nextjs-deploy-experiment/Dockerfile .
@@ -31,20 +35,25 @@ docker build --platform linux/amd64 -t $LOCAL_IMAGE:$TAG -f apps/nextjs-deploy-e
 docker tag $LOCAL_IMAGE:$TAG $REMOTE_IMAGE:$TAG
 docker push $REMOTE_IMAGE:$TAG
 
-# deploy https://cloud.google.com/sdk/gcloud/reference/run/deploy
-gcloud run deploy $RUN_PROJECT \
-  --region=$REGION \
-  --image=$REMOTE_IMAGE:$TAG \
-  --revision-suffix=$TAG \
-  --tag=$TAG \
-  --min-instances=0 \
-  --max-instances=5 \
-  --port=8080 \
-  --no-traffic
+  # deploy https://cloud.google.com/sdk/gcloud/reference/run/deploy
+  # gcloud run deploy $RUN_PROJECT \
+  #   --region=$RUN_REGION \
+  #   --image=$REMOTE_IMAGE:$TAG \
+  #   --revision-suffix=$TAG \
+  #   --tag=$TAG \
+  #   --min-instances=0 \
+  #   --max-instances=5 \
+  #   --port=8080 \
+  #   --no-traffic
 
-# rollout https://cloud.google.com/sdk/gcloud/reference/run/services/update-traffic
-gcloud run services update-traffic $RUN_PROJECT --region=$REGION --to-revisions=$RUN_PROJECT-$TAG=10
-gcloud run services update-traffic $RUN_PROJECT --region=$REGION --to-revisions=$RUN_PROJECT-$TAG=100
+  # # rollout https://cloud.google.com/sdk/gcloud/reference/run/services/update-traffic
+  # gcloud run services update-traffic $RUN_PROJECT --region=$RUN_REGION --to-revisions=$RUN_PROJECT-$TAG=10
+  # gcloud run services update-traffic $RUN_PROJECT --region=$RUN_REGION --to-revisions=$RUN_PROJECT-$TAG=100
+for RUN_REGION in ${RUN_REGIONS[@]}
+do
+  gcloud run services describe $RUN_PROJECT --region=$RUN_REGION --format=json
+done
+
 ```
 
 ## Steps Taken
