@@ -52,6 +52,9 @@ jobs:
         run: echo "Todo"
       - name: "Deploy Preview"
         run: |
+          if [${{ github.ref_name }} = "main" ]; then
+            branchLabel="branch=main"
+          fi
           for RUN_REGION in "us-east1" "us-central1"
           do
             echo "---- Deploying $RUN_REGION ----"
@@ -61,7 +64,7 @@ jobs:
               --image=${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }} \
               --revision-suffix=${{ steps.vars.outputs.tag }} \
               --tag=${{ steps.vars.outputs.tag }} \
-              --labels=branch=${{ github.ref_name }} \
+              --labels=$branchLabel \
               --min-instances=0 \
               --max-instances=5 \
               --port=8080 \
