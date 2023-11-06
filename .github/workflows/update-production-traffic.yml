@@ -1,14 +1,14 @@
-name: Promote Image
+name: Update Production Traffic
 run-name: Update Production Traffic
 on:
   workflow_dispatch:
     inputs:
       sha:
-        description: "SHA to Promote"
+        description: "SHA to Update"
         required: true
-      promote-to:
+      updateTo:
         type: choice
-        description: Promote to
+        description: Update to
         options:
           - all-traffic
           - ten-percent
@@ -33,3 +33,15 @@ jobs:
         uses: "google-github-actions/setup-gcloud@v1"
         with:
           version: "453.0.0"
+      - name: "Update Traffic"
+          run: |
+            if [ ${{ github.event.inputs.updateTo }} = 10 ]; then
+              updateTo=10
+            else
+              updateTo=100
+            fi
+            for RUN_REGION in "us-east1" "us-central1"
+            do
+              echo "---- Deploying $RUN_REGION ----"
+              gcloud run services update-traffic nextjs-deploy-experiment --region=$RUN_REGION --to-revisions=nextjs-deploy-experiment-rev-${{ github.event.inputs.sha }}=$updateTo
+            done
