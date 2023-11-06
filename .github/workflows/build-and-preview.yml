@@ -60,7 +60,7 @@ jobs:
               --image=${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }} \
               --revision-suffix=${{ steps.vars.outputs.tag }} \
               --tag=${{ steps.vars.outputs.tag }} \
-              --labels=branch=${{ github.ref_name }}
+              --labels=branch=${{ github.ref_name }} \
               --min-instances=0 \
               --max-instances=5 \
               --port=8080 \
