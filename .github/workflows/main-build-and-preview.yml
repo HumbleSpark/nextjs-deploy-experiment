@@ -13,10 +13,6 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: "Set up Cloud SDK"
-        uses: "google-github-actions/setup-gcloud@v1"
-        with:
-          version: "453.0.0"
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v1.1.1
@@ -25,6 +21,10 @@ jobs:
           service_account: "my-service-account@alert-parsec-404117.iam.gserviceaccount.com"
           token_format: "access_token"
           access_token_lifetime: 300s
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+        with:
+          version: "453.0.0"
       - name: Login to Artifact Registry
         uses: docker/login-action@v1
         with:
