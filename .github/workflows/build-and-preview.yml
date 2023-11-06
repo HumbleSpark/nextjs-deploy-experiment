@@ -19,7 +19,7 @@ jobs:
       - name: "Deploy Preview"
         run: |
           echo hmmm... ${{ github.ref_name }} 
-          if ["${{ github.ref_name }}" = "main" ]; then
+          if [ ${{ github.ref_name }} = "main" ]; then
             branch=main
           else
             branch=pull-request
