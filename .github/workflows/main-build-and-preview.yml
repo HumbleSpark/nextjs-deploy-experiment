@@ -42,6 +42,11 @@ jobs:
       #       --max-instances=5 \
       #       --port=8080 \
       #       --no-traffic
+      - name: Summary
+        run: |
+          echo "### Deployed! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "The revision can be reached directly at https://f2150dd---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
 
       # - name: Set outputs
       #   id: vars
