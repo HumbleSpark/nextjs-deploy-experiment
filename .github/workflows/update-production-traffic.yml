@@ -1,17 +1,6 @@
 name: Update Production Traffic
 run-name: Update Production Traffic
-on:
-  workflow_dispatch:
-    inputs:
-      sha:
-        description: "SHA to Update"
-        required: true
-      updateTo:
-        type: choice
-        description: Update to
-        options:
-          - all-traffic
-          - ten-percent
+on: workflow_dispatch
 jobs:
   Update-Production-Traffic:
     runs-on: ubuntu-latest
