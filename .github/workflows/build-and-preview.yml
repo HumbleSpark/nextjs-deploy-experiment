@@ -16,66 +16,75 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: Authenticate to Google Cloud
-        id: auth
-        uses: google-github-actions/auth@v1.1.1
-        with:
-          workload_identity_provider: "projects/525978447980/locations/global/workloadIdentityPools/my-pool/providers/my-provider-x"
-          service_account: "my-service-account@alert-parsec-404117.iam.gserviceaccount.com"
-          token_format: "access_token"
-          access_token_lifetime: 300s
-      - name: "Set up Cloud SDK"
-        uses: "google-github-actions/setup-gcloud@v1"
-        with:
-          version: "453.0.0"
-      - name: Login to Artifact Registry
-        uses: docker/login-action@v3
-        with:
-          registry: us-central1-docker.pkg.dev
-          username: "oauth2accesstoken"
-          password: "${{ steps.auth.outputs.access_token }}"
-      - name: Parse SHA / Tag
-        id: vars
-        run: echo "tag=rev-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: Tag Docker image and push to Google Artifact Registry
-        uses: docker/build-push-action@v5
-        with:
-          push: true
-          context: .
-          file: ./apps/nextjs-deploy-experiment/Dockerfile
-          platforms: linux/amd64
-          tags: |
-            ${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }}
-            ${{ env.Docker_Image }}:latest
-      - name: Upload Assets
-        # pull docker image, sh inside, upload assets to gcs
-        run: echo "Todo"
       - name: "Deploy Preview"
         run: |
+          echo hmmm... ${{ github.ref_name }} 
           if [${{ github.ref_name }} = "main" ]; then
             branchLabel="branch=main"
           else
             branchLabel=""
           fi
-          for RUN_REGION in "us-east1" "us-central1"
-          do
-            echo "---- Deploying $RUN_REGION ----"
-            echo ""
-            gcloud run deploy nextjs-deploy-experiment \
-              --region=$RUN_REGION \
-              --image=${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }} \
-              --revision-suffix=${{ steps.vars.outputs.tag }} \
-              --tag=${{ steps.vars.outputs.tag }} \
-              --labels=$branchLabel \
-              --min-instances=0 \
-              --max-instances=5 \
-              --port=8080 \
-              --no-traffic
-            echo ""
-          done
-      - name: Summary
-        run: |
-          echo "### Deployed! :rocket:" >> $GITHUB_STEP_SUMMARY
-          echo "The revision can be reached directly at https://${{ steps.vars.outputs.tag }}---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app (Central)" >> $GITHUB_STEP_SUMMARY
-          echo "The revision can be reached directly at https://${{ steps.vars.outputs.tag }}---nextjs-deploy-experiment-szlazhzr7q-ue.a.run.app (East)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          echo ok... $branchLabel
+      # - name: Authenticate to Google Cloud
+      #   id: auth
+      #   uses: google-github-actions/auth@v1.1.1
+      #   with:
+      #     workload_identity_provider: "projects/525978447980/locations/global/workloadIdentityPools/my-pool/providers/my-provider-x"
+      #     service_account: "my-service-account@alert-parsec-404117.iam.gserviceaccount.com"
+      #     token_format: "access_token"
+      #     access_token_lifetime: 300s
+      # - name: "Set up Cloud SDK"
+      #   uses: "google-github-actions/setup-gcloud@v1"
+      #   with:
+      #     version: "453.0.0"
+      # - name: Login to Artifact Registry
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: us-central1-docker.pkg.dev
+      #     username: "oauth2accesstoken"
+      #     password: "${{ steps.auth.outputs.access_token }}"
+      # - name: Parse SHA / Tag
+      #   id: vars
+      #   run: echo "tag=rev-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      # - name: Tag Docker image and push to Google Artifact Registry
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     push: true
+      #     context: .
+      #     file: ./apps/nextjs-deploy-experiment/Dockerfile
+      #     platforms: linux/amd64
+      #     tags: |
+      #       ${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }}
+      #       ${{ env.Docker_Image }}:latest
+      # - name: Upload Assets
+      #   # pull docker image, sh inside, upload assets to gcs
+      #   run: echo "Todo"
+      # - name: "Deploy Preview"
+      #   run: |
+      #     if [${{ github.ref_name }} = "main" ]; then
+      #       branchLabel="branch=main"
+      #     else
+      #       branchLabel=""
+      #     fi
+      #     for RUN_REGION in "us-east1" "us-central1"
+      #     do
+      #       echo "---- Deploying $RUN_REGION ----"
+      #       echo ""
+      #       gcloud run deploy nextjs-deploy-experiment \
+      #         --region=$RUN_REGION \
+      #         --image=${{ env.Docker_Image }}:${{ steps.vars.outputs.tag }} \
+      #         --revision-suffix=${{ steps.vars.outputs.tag }} \
+      #         --tag=${{ steps.vars.outputs.tag }} \
+      #         --labels=$branchLabel \
+      #         --min-instances=0 \
+      #         --max-instances=5 \
+      #         --port=8080 \
+      #         --no-traffic
+      #       echo ""
+      #     done
+      # - name: Summary
+      #   run: |
+      #     echo "### Deployed! :rocket:" >> $GITHUB_STEP_SUMMARY
+      #     echo "The revision can be reached directly at https://${{ steps.vars.outputs.tag }}---nextjs-deploy-experiment-szlazhzr7q-uc.a.run.app (Central)" >> $GITHUB_STEP_SUMMARY
+      #     echo "The revision can be reached directly at https://${{ steps.vars.outputs.tag }}---nextjs-deploy-experiment-szlazhzr7q-ue.a.run.app (East)" >> $GITHUB_STEP_SUMMARY
+      #     echo "" >> $GITHUB_STEP_SUMMARY
